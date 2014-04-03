@@ -11,16 +11,14 @@ class StdOutListener( tweepy.streaming.StreamListener):
 
 	def on_data(self, data):
 		tweet_match = py_tweet.tweet(data)
-		if lieswithinIndia(tweet_match.latitude, tweet_match.longitude):
-			if hashtag_filter(tweet_match.message):
-				print getattr(tweet_match,'time')
-				sql_insert = """
-				INSERT or IGNORE
-				INTO {} VALUES (?,?,?,?,?,?,?,?,?,?);
-				""".format( db_name )
-				db.cursor().execute( sql_insert , tweet_match.get_tuple() )
-				db.commit()
-			
+		if lieswithinIndia(tweet_match.latitude, tweet_match.longitude) & hashtag_filter(tweet_match.message):
+			print getattr(tweet_match,'time')
+			sql_insert = """
+			INSERT or IGNORE
+			INTO {} VALUES (?,?,?,?,?,?,?,?,?,?);
+			""".format( db_name )
+			db.cursor().execute( sql_insert , tweet_match.get_tuple() )
+			db.commit()
 			return True
 		else:
 			return False
