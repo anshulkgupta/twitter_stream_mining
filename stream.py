@@ -8,12 +8,6 @@ import py_tweet
 import sqlite3
 
 class StdOutListener( tweepy.streaming.StreamListener):
-	def lieswithinIndia(latitude, longitude):
-		# Using rough co-ordinates of india
-		if(latitude > 6.75) && (latitude < 35.99):
-			if (longitude > 68.17) && (longitude < 97.04):
-				return True
-		return False
 
 	def on_data(self, data):
 		tweet_match = py_tweet.tweet(data)
@@ -30,6 +24,14 @@ class StdOutListener( tweepy.streaming.StreamListener):
 			return True
 		else:
 			return False
+
+
+# Using rough co-ordinates of india	
+def lieswithinIndia(latitude, longitude):
+	if(latitude > 6.75) & (latitude < 35.99):
+		if (longitude > 68.17) & (longitude < 97.04):
+			return True
+	return False
 
 # Requires ONE hashtag to be in the tweet.
 def hashtag_OR_filter(message):
