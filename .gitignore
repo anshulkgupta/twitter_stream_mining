@@ -8,4 +8,4 @@ build/
 TODO.txt
 test.txt
 *.db
-
+credentials.py
