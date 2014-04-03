@@ -8,19 +8,28 @@ import py_tweet
 import sqlite3
 
 class StdOutListener( tweepy.streaming.StreamListener):
+	def lieswithinIndia(latitude, longitude):
+		# Using rough co-ordinates of india
+		if(latitude > 6.75) && (latitude < 35.99):
+			if (longitude > 68.17) && (longitude < 97.04):
+				return True
+		return False
+
 	def on_data(self, data):
 		tweet_match = py_tweet.tweet(data)
-
-		if hashtag_filter(tweet_match.message):
-			print getattr(tweet_match,'time')
-			sql_insert = """
-			INSERT or IGNORE
-			INTO {} VALUES (?,?,?,?,?,?,?,?,?,?);
-			""".format( db_name )
-			db.cursor().execute( sql_insert , tweet_match.get_tuple() )
-			db.commit()
-		
-		return True
+		if lieswithinIndia(tweet_match.latitude, tweet_match.longitude):
+			if hashtag_filter(tweet_match.message):
+				print getattr(tweet_match,'time')
+				sql_insert = """
+				INSERT or IGNORE
+				INTO {} VALUES (?,?,?,?,?,?,?,?,?,?);
+				""".format( db_name )
+				db.cursor().execute( sql_insert , tweet_match.get_tuple() )
+				db.commit()
+			
+			return True
+		else:
+			return False
 
 # Requires ONE hashtag to be in the tweet.
 def hashtag_OR_filter(message):
@@ -52,7 +61,7 @@ def start_record(db_name):
 		PRIMARY KEY (url)
 	);
 	""".format(db_name)
-	db = sqlite3.connect( 'logs/data.db' )
+	db = sqlite3.connect( 'logs/download1.db' )
 	atexit.register( clean_up, db )
 
 	cursor = db.cursor()
