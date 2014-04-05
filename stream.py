@@ -23,7 +23,7 @@ class StdOutListener( tweepy.streaming.StreamListener):
 			return True
 		else:
 			return False
-		if count%100 == 0
+		if count%100 == 0:
 			print count
 		count=count+1
 
