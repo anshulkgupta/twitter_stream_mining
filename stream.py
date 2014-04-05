@@ -3,18 +3,14 @@ import tweepy.streaming
 from tweepy import OAuthHandler
 from tweepy import Stream
 import credentials
-import logging
-import time
-import sys
 import atexit
 import py_tweet
 import sqlite3
-count = 0
 
 class StdOutListener( tweepy.streaming.StreamListener):
-
-	def on_status(self, data):
+	def on_data(self, data):
 		tweet_match = py_tweet.tweet(data)
+
 		if hashtag_filter(tweet_match.message):
 			print getattr(tweet_match,'time')
 			sql_insert = """
@@ -23,18 +19,9 @@ class StdOutListener( tweepy.streaming.StreamListener):
 			""".format( db_name )
 			db.cursor().execute( sql_insert , tweet_match.get_tuple() )
 			db.commit()
-			return True
-		else:
-			return False
-		if count%100 == 0:
-			print count
-		count=count+1
+		
+		return True
 
-	def on_error(self, status_code):
-		print 'error: %s', status_code
-	def on_timeout(self):
-		print 'timeout'
-    	
 # Requires ONE hashtag to be in the tweet.
 def hashtag_OR_filter(message):
 	for query in hashtag_queries:
@@ -65,7 +52,7 @@ def start_record(db_name):
 		PRIMARY KEY (url)
 	);
 	""".format(db_name)
-	db = sqlite3.connect( 'logs/download1.db' )
+	db = sqlite3.connect( 'logs/d1.db' )
 	atexit.register( clean_up, db )
 
 	cursor = db.cursor()
@@ -94,10 +81,11 @@ if __name__ == '__main__':
 
 	if 'all' in search_type:
 		hashtag_filter = hashtag_AND_filter
+		db_name = '_AND_'.join(hashtag_queries)
 	else:
 		hashtag_filter = hashtag_OR_filter
+		db_name = '_OR_'.join(hashtag_queries)
 	
-	db_name = 'download1'
 	print db_name
 	db = start_record(db_name)
 
