@@ -37,7 +37,7 @@
     var map = d3.select("#chart").append("svg:svg")
         .attr("width", w)
         .attr("height", h)
-//        .call(d3.behavior.zoom().on("zoom", redraw))
+        .call(d3.behavior.zoom().on("zoom", redraw))
         .call(initialize);
 
     var india = map.append("svg:g")
@@ -56,7 +56,7 @@
     }
 
 
-/*    
+    
    // This section should allow for zoom & pan.
 
    function redraw() {
@@ -89,7 +89,7 @@ var states = svg.append("g")
     function quantize(d) {
       return "q" + Math.min(8, ~~(data[d.id] * 9 / 12)) + "-9";
     }
-*/
+
   </script>
 </body>
 </html>
