@@ -3,6 +3,9 @@ import tweepy.streaming
 from tweepy import OAuthHandler
 from tweepy import Stream
 import credentials
+import logging
+import time
+import sys
 import atexit
 import py_tweet
 import sqlite3
@@ -10,7 +13,7 @@ count = 0
 
 class StdOutListener( tweepy.streaming.StreamListener):
 
-	def on_data(self, data):
+	def on_status(self, data):
 		tweet_match = py_tweet.tweet(data)
 		if hashtag_filter(tweet_match.message):
 			print getattr(tweet_match,'time')
@@ -27,6 +30,11 @@ class StdOutListener( tweepy.streaming.StreamListener):
 			print count
 		count=count+1
 
+	def on_error(self, status_code):
+		print 'error: %s', status_code
+	def on_timeout(self):
+		print 'timeout'
+    	
 # Requires ONE hashtag to be in the tweet.
 def hashtag_OR_filter(message):
 	for query in hashtag_queries:
