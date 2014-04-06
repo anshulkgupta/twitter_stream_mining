@@ -1,8 +1,8 @@
 #!/bin/bash
-exec >out.csv
-sqlite3 data.db <<!
+exec > out.csv
+sqlite3 d1.db <<!
 .headers on
 .mode csv
 .output out.csv
-select * from yolo;
+select * from aap_OR_kejriwal;
 !
